@@ -21,5 +21,8 @@ PASSWORD   # basic auth password to access results
 /404      GET   404 handler
 ```
 
+## Peer Dependencies
+None
+
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
