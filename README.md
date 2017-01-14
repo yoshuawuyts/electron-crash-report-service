@@ -18,6 +18,7 @@ PASSWORD   # basic auth password to access results
 ## Routes
 ```txt
 /report   PUT   Create a new crash report
+/list     GET   Stream out a range of timestamps
 /404      GET   404 handler
 ```
 
