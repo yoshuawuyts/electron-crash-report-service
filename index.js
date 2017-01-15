@@ -1,6 +1,7 @@
 var authmw = require('./lib/basic-auth-middleware')
 var querymw = require('./lib/query-middleware')
 var read = require('read-directory')
+var bulk = require('bulk-require')
 var level = require('level')
 var merry = require('merry')
 var path = require('path')
@@ -15,7 +16,7 @@ var env = merry.env({
   PASSWORD: String
 })
 
-var handlers = read.sync(path.join(__dirname, 'handlers'))
+var handlers = bulk(__dirname, [ 'handlers/*' ]).handlers
 var schemas = read.sync(path.join(__dirname, 'schemas'))
 var db = level(env.DB_PATH, { valueEncoding: 'json' })
 

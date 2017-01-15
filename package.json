@@ -13,13 +13,13 @@
   },
   "dependencies": {
     "basic-auth": "^1.1.0",
+    "bulk-require": "^1.0.0",
     "level": "^1.5.0",
     "merry": "^4.0.0",
     "is-my-json-valid": "^2.15.0",
     "read-directory": "^2.0.0"
   },
   "devDependencies": {
-    "bulk-require": "^1.0.0",
     "concat-stream": "^1.6.0",
     "dependency-check": "^2.7.0",
     "get-server-port": "^1.0.0",
