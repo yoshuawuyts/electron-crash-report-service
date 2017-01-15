@@ -18,11 +18,20 @@ tape('report handler', function (t) {
     var ctx = {
       body: {
         error: String(new Error('oh no!')),
-        timestamp: String(Date.now())
+        timestamp: String(Date.now()),
+        version: 'v3.0.1'
       }
     }
     report.put(null, null, ctx, function (err, val) {
       t.ifError(err, 'no error')
     })
+  })
+})
+
+tape('list handler', function (t) {
+  t.test('should assert input types', function (t) {
+    t.plan(2)
+    t.throws(handlers.list.bind(null), /object/)
+    t.throws(handlers.list.bind(null, {}), /db/)
   })
 })
