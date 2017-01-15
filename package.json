@@ -1,7 +1,7 @@
 {
   "name": "crash-reporter-service",
   "description": "Aggregate crash reports for Electron apps",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "deps": "dependency-check . && dependency-check . --extra --no-dev",
     "start": "node .",
