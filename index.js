@@ -1,3 +1,4 @@
+var querymw = require('./lib/query-middleware')
 var read = require('read-directory')
 var level = require('level')
 var merry = require('merry')
@@ -5,6 +6,7 @@ var path = require('path')
 
 var notFound = merry.notFound
 var mw = merry.middleware
+mw.query = querymw
 
 var env = merry.env({
   PORT: 8080,
@@ -26,7 +28,7 @@ server.router([
   [ '/report', {
     put: mw([ mw.schema(schemas.report), report.put ])
   } ],
-  [ '/list', mw([ list.get ]) ],
+  [ '/list', mw([ mw.query(schemas['list-query']), list.get ]) ],
   [ '/404', notFound() ]
 ])
 server.listen(env.PORT)

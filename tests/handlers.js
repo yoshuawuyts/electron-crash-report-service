@@ -1,3 +1,4 @@
+var concat = require('concat-stream')
 var bulk = require('bulk-require')
 var memdb = require('memdb')
 var path = require('path')
@@ -41,18 +42,33 @@ tape('list handler', function (t) {
     t.throws(list.get.bind(null, {}, {}, { query: query }, noop), /to/)
   })
 
-  t.test('should be able to GET a list of keys', function (t) {
-    t.plan(1)
-    var list = handlers.list({ db: memdb() })
+  t.test('should be able to GET a list of errors', function (t) {
+    t.plan(4)
+
+    var yest = (new Date()).toISOString()
     var now = Date.now()
+    var tmrw = (new Date()).toISOString()
+
+    var db = memdb({ valueEncoding: 'json' })
+    var list = handlers.list({ db: db })
+    db.put(now, { some: 'data' }, { sync: true })
+
     var ctx = {
       query: {
-        from: String(0),
-        to: String(now)
+        from: yest,
+        to: tmrw
       }
     }
-    list.get(null, null, ctx, function (err, val) {
+    list.get(null, null, ctx, function (err, stream) {
       t.ifError(err, 'no error')
+      var cs = concat({ encoding: 'object' }, function (arr) {
+        t.ok(Array.isArray(arr), 'arr is array')
+        t.equal(arr.length, 1, '1 entry')
+        t.deepEqual(arr[0].value, { some: 'data' })
+      })
+      stream.pipe(cs)
     })
   })
+
+  t.test('should convert')
 })

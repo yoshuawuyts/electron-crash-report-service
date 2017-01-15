@@ -16,12 +16,12 @@ function handler (opts) {
     assert.equal(typeof ctx.query.from, 'string', 'handlers/list.get: ctx.query.from should be type string')
     assert.equal(typeof ctx.query.to, 'string', 'handlers/list.get: ctx.query.to should be type string')
 
-    var lowerBound = ctx.query.from
-    var upperBound = ctx.query.to
+    var lowerBound = Date.parse(ctx.query.from)
+    var upperBound = Date.parse(ctx.query.to)
 
     var dbOpts = {
-      gt: lowerBound,
-      lt: upperBound
+      gte: lowerBound,
+      lte: upperBound
     }
 
     var rangeStream = db.createReadStream(dbOpts)
