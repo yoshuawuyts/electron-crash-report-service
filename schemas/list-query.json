@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "from": {
+      "type": "string",
+      "required": true,
+      "format": "date-time"
+    },
+    "to": {
+      "type": "string",
+      "required": true,
+      "format": "date-time"
+    }
+  }
+}

@@ -53,3 +53,37 @@ tape('schema-report', function (t) {
     t.equal(err.field, 'data.version')
   })
 })
+
+tape('schema-list-query', function (t) {
+  t.test('should pass if a valid object was provided', function (t) {
+    t.plan(1)
+    var validate = validator(schemas['list-query'])
+    validate({
+      from: (new Date()).toISOString(),
+      to: (new Date()).toISOString()
+    })
+    t.notOk(validate.errors, 'no errors')
+  })
+
+  t.test('should fail if no from was provided', function (t) {
+    t.plan(2)
+    var validate = validator(schemas['list-query'])
+    validate({
+      to: (new Date()).toISOString()
+    })
+    t.ok(validate.errors, 'errors exist')
+    var err = validate.errors[0]
+    t.equal(err.field, 'data.from')
+  })
+
+  t.test('should fail if no to was provided', function (t) {
+    t.plan(2)
+    var validate = validator(schemas['list-query'])
+    validate({
+      from: (new Date()).toISOString()
+    })
+    t.ok(validate.errors, 'errors exist')
+    var err = validate.errors[0]
+    t.equal(err.field, 'data.to')
+  })
+})
