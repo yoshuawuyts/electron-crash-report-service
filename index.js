@@ -17,7 +17,7 @@ var env = merry.env({
 
 var handlers = read.sync(path.join(__dirname, 'handlers'))
 var schemas = read.sync(path.join(__dirname, 'schemas'))
-var db = level(env.DB_PATH)
+var db = level(env.DB_PATH, { valueEncoding: 'json' })
 
 var handlerOpts = { db: db }
 var report = handlers.report(handlerOpts)
