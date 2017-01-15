@@ -9,6 +9,7 @@
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov"
   },
   "dependencies": {
+    "basic-auth": "^1.1.0",
     "level": "^1.5.0",
     "merry": "^4.0.0",
     "read-directory": "^2.0.0"

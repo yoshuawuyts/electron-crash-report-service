@@ -1,3 +1,4 @@
+var authmw = require('./lib/basic-auth-middleware')
 var querymw = require('./lib/query-middleware')
 var read = require('read-directory')
 var level = require('level')
@@ -6,7 +7,6 @@ var path = require('path')
 
 var notFound = merry.notFound
 var mw = merry.middleware
-mw.query = querymw
 
 var env = merry.env({
   PORT: 8080,
@@ -22,13 +22,14 @@ var db = level(env.DB_PATH, { valueEncoding: 'json' })
 var handlerOpts = { db: db }
 var report = handlers.report(handlerOpts)
 var list = handlers.list(handlerOpts)
+var authenticate = authmw(env.USERNAME, env.PASSWORD)
 var server = merry()
 
 server.router([
   [ '/report', {
     put: mw([ mw.schema(schemas.report), report.put ])
   } ],
-  [ '/list', mw([ mw.query(schemas['list-query']), list.get ]) ],
+  [ '/list', mw([ authenticate, querymw(schemas['list-query']), list.get ]) ],
   [ '/404', notFound() ]
 ])
 server.listen(env.PORT)
