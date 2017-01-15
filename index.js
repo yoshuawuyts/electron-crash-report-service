@@ -21,9 +21,9 @@ var schemas = read.sync(path.join(__dirname, 'schemas'))
 var db = level(env.DB_PATH, { valueEncoding: 'json' })
 
 var handlerOpts = { db: db }
+var authenticate = authmw(env.USERNAME, env.PASSWORD)
 var report = handlers.report(handlerOpts)
 var list = handlers.list(handlerOpts)
-var authenticate = authmw(env.USERNAME, env.PASSWORD)
 var server = merry()
 
 server.router([
