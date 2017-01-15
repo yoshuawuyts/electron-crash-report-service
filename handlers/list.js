@@ -1,5 +1,4 @@
 var assert = require('assert')
-var pump = require('pump')
 
 module.exports = handler
 
@@ -24,7 +23,8 @@ function handler (opts) {
       gt: lowerBound,
       lt: upperBound
     }
+
     var rangeStream = db.createReadStream(dbOpts)
-    pump(rangeStream, res)
+    done(null, rangeStream)
   }
 }

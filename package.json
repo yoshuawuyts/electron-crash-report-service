@@ -2,7 +2,6 @@
   "name": "crash-reporter-service",
   "description": "Aggregate crash reports for Electron apps",
   "version": "1.0.0",
-  "private": true,
   "scripts": {
     "deps": "dependency-check . && dependency-check . --extra --no-dev",
     "start": "node .",
@@ -12,7 +11,6 @@
   "dependencies": {
     "level": "^1.5.0",
     "merry": "^4.0.0",
-    "pump": "^1.0.2",
     "read-directory": "^2.0.0"
   },
   "devDependencies": {
