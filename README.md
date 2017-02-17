@@ -1,4 +1,4 @@
-# crash-reporter-service
+# electron-crash-report-service
 Aggregate crash reports for Electron apps
 
 ## Usage
@@ -24,6 +24,9 @@ PASSWORD   # basic auth password to access results
 
 ## Peer Dependencies
 None
+
+## See Also
+- [electron/api/crash-reporters](https://github.com/electron/electron/blob/master/docs/api/crash-reporter.md)
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)

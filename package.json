@@ -1,5 +1,5 @@
 {
-  "name": "crash-reporter-service",
+  "name": "electron-crash-report-service",
   "description": "Aggregate crash reports for Electron apps",
   "version": "1.0.6",
   "scripts": {
@@ -9,7 +9,7 @@
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov"
   },
   "bin": {
-    "crash-reporter-service": "bin.js"
+    "electron-crash-report-service": "bin.js"
   },
   "dependencies": {
     "basic-auth": "^1.1.0",
