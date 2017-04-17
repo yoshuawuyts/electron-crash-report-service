@@ -1,36 +1,59 @@
-var authmw = require('./lib/basic-auth-middleware')
-var querymw = require('./lib/query-middleware')
-var read = require('read-directory')
-var bulk = require('bulk-require')
-var level = require('level')
-var merry = require('merry')
-var path = require('path')
+var serverRouter = require('server-router')
+var logHttp = require('log-http')
+var envobj = require('envobj')
+var mkdirp = require('mkdirp')
+var multer = require('multer')
+var http = require('http')
+var pino = require('pino')
+var fs = require('fs')
 
-var notFound = merry.notFound
-var mw = merry.middleware
+var config = {
+  CRASH_REPORTS_PATH: String,
+  NODE_ENV: String,
+  PORT: String
+}
 
-var env = merry.env({
-  PORT: 8080,
-  DB_PATH: '/tmp/crash-reporter-service',
-  USERNAME: String,
-  PASSWORD: String
+var env = envobj(config)
+var log = pino('http')
+var router = serverRouter()
+var server = http.createServer(handleRoute)
+var stats = logHttp(server)
+
+mkdirp.sync(env.CRASH_REPORTS_PATH)
+
+router.route('GET', '/404', function (req, res, ctx) {
+  res.statusCode = 404
+  res.end('{ "message": "route not found" }')
 })
 
-var handlers = bulk(__dirname, [ 'handlers/*' ]).handlers
-var schemas = read.sync(path.join(__dirname, 'schemas'))
-var db = level(env.DB_PATH, { valueEncoding: 'json' })
+var upload = multer({ DEST: env.CRASH_REPORTS_PATH }).single('upload_file_minidumps')
+router.route('POST', '/crash-report', function (req, res, ctx) {
+  upload(req, res, function (err) {
+    if (err) {
+      log.error('Error parsing crash report: ' + err.message)
+      res.status(500)
+      return res.end()
+    }
+    req.body.filename = req.file.filename
+    var crashLog = JSON.stringify(req.body, undefined, 2)
 
-var handlerOpts = { db: db }
-var authenticate = authmw(env.USERNAME, env.PASSWORD)
-var report = handlers.report(handlerOpts)
-var list = handlers.list(handlerOpts)
-var server = merry()
+    fs.writeFile(req.file.path + '.json', crashLog, function (err) {
+      if (err) {
+        log.error('Error saving crash report: ' + err.message)
+        res.status(500)
+      }
+      res.end()
+    })
+  })
+})
 
-server.router([
-  [ '/report', {
-    put: mw([ mw.schema(schemas.report), report.put ])
-  } ],
-  [ '/list', mw([ authenticate, querymw(schemas['list-query']), list.get ]) ],
-  [ '/404', notFound() ]
-])
-server.listen(env.PORT)
+server.listen(env.PORT, function () {
+  log.info(`server started on port ${this.address().port}`)
+})
+stats.on('data', function (level, data) {
+  log[level](data)
+})
+
+function handleRoute (req, res) {
+  router.match(req, res)
+}

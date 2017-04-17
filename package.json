@@ -2,32 +2,30 @@
   "name": "electron-crash-report-service",
   "description": "Aggregate crash reports for Electron apps",
   "version": "1.0.6",
+  "repository": "yoshuawuyts/electron-crash-report-service",
+  "license": "MIT",
   "scripts": {
     "deps": "dependency-check . && dependency-check . --extra --no-dev",
-    "start": "node .",
-    "test": "standard && npm run deps && nyc tap tests/*.js",
+    "start": "CRASH_REPORTS_PATH=/tmp/crash-reports NODE_ENV=development PORT=8080 nodemon . | pino-colada",
+    "test": "standard && npm run deps",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov"
   },
   "bin": {
-    "electron-crash-report-service": "bin.js"
+    "electron-crash-report-service": "index.js"
   },
   "dependencies": {
-    "basic-auth": "^1.1.0",
-    "bulk-require": "^1.0.0",
-    "level": "^1.5.0",
-    "merry": "^4.0.0",
-    "is-my-json-valid": "^2.15.0",
-    "read-directory": "^2.0.0"
+    "envobj": "^1.0.3",
+    "log-http": "^1.0.0",
+    "mkdirp": "^0.5.1",
+    "multer": "^1.3.0",
+    "pino": "^4.2.4",
+    "server-router": "^5.0.0"
   },
   "devDependencies": {
-    "concat-stream": "^1.6.0",
     "dependency-check": "^2.7.0",
-    "get-server-port": "^1.0.0",
-    "memdb": "^1.3.1",
     "nodemon": "^1.11.0",
-    "nyc": "^10.0.0",
+    "pino-colada": "^1.3.0",
     "standard": "^8.6.0",
-    "tap": "^9.0.3",
     "tape": "^4.6.3"
   }
 }
