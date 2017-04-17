@@ -1,5 +1,4 @@
 #!/bin/sh
-
 set -e
 
 id="$(id -u)"
@@ -19,7 +18,8 @@ __dirname="$(dirname "$__filename")"
 
 # Configuration
 VERSION="$(jq -r .version < "${__dirname}/package.json")"
-NAME="electron-crash-reporter-service-${VERSION}"
+NAME="$(jq -r .name < "${__dirname}/package.json")"
+NAME="${NAME}-${VERSION}"
 NODE_VERSION="6"
 OUTDIR="$1"
 
