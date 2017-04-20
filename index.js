@@ -19,29 +19,48 @@ var router = serverRouter()
 var server = http.createServer(handleRoute)
 var stats = logHttp(server)
 
+var errors = {
+  ENOTFOUND: function (req, res) {
+    log.warn('ENOTFOUND', { url: req.url })
+    res.statusCode = 404
+    return JSON.stringify({
+      type: 'invalid_request_error',
+      message: 'The route ' + req.url + ' was invalid'
+    })
+  },
+  EREPORTPARSE: function (req, res, err) {
+    log.error('EREPORTPARSE', err)
+    res.statusCode = 400
+    return JSON.stringify({
+      type: 'invalid_request_error',
+      message: 'Could not parse the crash report upload. Please upload a valid crash report.'
+    })
+  },
+  EREPORTWRITE: function (req, res, err) {
+    log.error('EREPORTWRITE', err)
+    res.statusCode = 500
+    return JSON.stringify({
+      type: 'api_error',
+      message: 'Internal server error. The report was not saved.'
+    })
+  }
+}
+
 mkdirp.sync(env.CRASH_REPORTS_PATH)
 
 router.route('GET', '/404', function (req, res, ctx) {
-  res.statusCode = 404
-  res.end('{ "message": "route not found" }')
+  return res.end(errors.ENOTFOUND(req, res))
 })
 
 var upload = multer({ DEST: env.CRASH_REPORTS_PATH }).single('upload_file_minidumps')
 router.route('POST', '/crash-report', function (req, res, ctx) {
   upload(req, res, function (err) {
-    if (err) {
-      log.error('Error parsing crash report: ' + err.message)
-      res.status(500)
-      return res.end()
-    }
+    if (err) return res.end(errors.EREPORTPARSE(req, res, err))
     req.body.filename = req.file.filename
     var crashLog = JSON.stringify(req.body, undefined, 2)
 
     fs.writeFile(req.file.path + '.json', crashLog, function (err) {
-      if (err) {
-        log.error('Error saving crash report: ' + err.message)
-        res.status(500)
-      }
+      if (err) return res.end(errors.EREPORTWRITE(req, res, err))
       res.end()
     })
   })
