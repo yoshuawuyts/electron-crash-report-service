@@ -1,7 +1,7 @@
 {
   "name": "electron-crash-report-service",
   "description": "Aggregate crash reports for Electron apps",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "repository": "yoshuawuyts/electron-crash-report-service",
   "license": "MIT",
   "scripts": {
