@@ -11,7 +11,7 @@
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov"
   },
   "bin": {
-    "electron-crash-report-service": "node index.js"
+    "electron-crash-report-service": "bin.js"
   },
   "dependencies": {
     "envobj": "^1.0.3",
