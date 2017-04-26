@@ -29,10 +29,16 @@ trap '{ export EXT=$?; acbuild end && exit $EXT; }' EXIT
 
 # Build
 acbuild --debug set-name "$NAME"
+acbuild --debug set-exec -- /usr/bin/node /var/www/index.js
 acbuild --debug run -- apk update
 acbuild --debug copy-to-dir "$__dirname"/* /var/www/
-acbuild --debug run -- npm install --production --prefix=/var/www
-acbuild --debug environment add PORT 80
+acbuild --debug run -- npm install --quiet --production --prefix=/var/www
+
+# Config
 acbuild --debug port add http tcp 80
-acbuild --debug set-exec -- /usr/bin/node /var/www/index.js
+acbuild --debug environment add PORT 80
+acbuild --debug environment add CRASH_REPORTS_PATH '/var/crash-reports'
+acbuild --debug environment add NODE_ENV 'production'
+
+# Finalize
 acbuild --debug write --overwrite "${OUTDIR}/${NAME}.aci"
