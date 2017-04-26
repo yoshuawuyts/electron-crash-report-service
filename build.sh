@@ -19,7 +19,8 @@ __dirname="$(dirname "$__filename")"
 # Configuration
 VERSION="$(jq -r .version < "${__dirname}/package.json")"
 NAME="$(jq -r .name < "${__dirname}/package.json")"
-NAME="${NAME}-${VERSION}"
+HASH="$(git log -1 --oneline | awk '{ print $1 }')"
+NAME="${NAME}-${VERSION}-${HASH}"
 NODE_VERSION="6"
 OUTDIR="$1"
 
