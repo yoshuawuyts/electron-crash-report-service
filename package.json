@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "deps": "dependency-check . && dependency-check . --extra --no-dev",
-    "start": "CRASH_REPORTS_PATH=/tmp/crash-reports NODE_ENV=development PORT=8080 nodemon . | pino-colada",
+    "start": "STORAGE_PATH=/tmp/crash-reports NODE_ENV=development PORT=8080 nodemon . | pino-colada",
     "test": "standard && npm run deps",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov"
   },

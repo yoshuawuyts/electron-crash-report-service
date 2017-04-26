@@ -39,7 +39,7 @@ acbuild --debug run -- npm install --quiet --production --prefix=/var/www
 acbuild --debug port add http tcp 80
 acbuild --debug environment add PORT 80
 acbuild --debug environment add NODE_ENV 'production'
-acbuild --debug environment add CRASH_REPORTS_PATH '/var/crash-reports'
+acbuild --debug environment add STORAGE_PATH '/var/crash-reports'
 
 # Finalize
 acbuild --debug write --overwrite "${OUTDIR}/${NAME}.aci"

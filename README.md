@@ -44,37 +44,10 @@ electron.crashReporter.start({
 })
 ```
 
-### Unit file
-```service
-[Unit]
-Description=Container myalpine
-
-[Service]
-Environment=NODE_ENV=production
-Environment=PORT=8081
-Environment=CRASH_REPORTS_PATH=/root/reports
-ExecStart=/usr/bin/systemd-nspawn \
-  --quiet \
-  --keep-unit \
-  --boot \
-  --link-journal=try-guest \
-  --directory=/var/lib/container/electron-crash-reporter-service \
-  --network-macvlan=eth0 \
-  /usr/bin/env node \
-  /usr/root/electron-crash-reporter-service/index.js
-KillMode=mixed
-Type=notify
-RestartForceExitStatus=133
-SuccessExitStatus=133
-
-[Install]
-WantedBy=multi-user.target
-```
-
 ## Environment variables
 ```sh
 PORT [80]                                # Set the port the service should listen to
-CRASH_REPORTS_PATH [/var/crash-reports]  # Location to store crash reports
+STORAGE_PATH [/var/crash-reports]  # Location to store crash reports
 NODE_ENV [production]                    # production|development
 ```
 
@@ -86,6 +59,37 @@ NODE_ENV [production]                    # production|development
 
 ## Peer Dependencies
 None
+
+## Unit file
+Save the unit file as `/etc/systemd/system/electron-crash-reporter.service`,
+and the application image as `/images/electron-crash-report-service.aci`
+
+```unit
+[Unit]
+Description=electron-crash-report-service
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Slice=machine.slice
+Delegate=true
+CPUQuota=10%
+MemoryLimit=1G
+Environment=PORT=80
+Environment=STORAGE_PATH=/var/crash-reports
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/rkt run --inherit-env /images/electron-crash-report-service.aci
+ExecStopPost=/usr/bin/rkt gc --mark-only
+KillMode=mixed
+Restart=always
+```
+
+You can then run it using `systemctl`:
+```sh
+$ sudo systemctl start etcd.service
+$ sudo systemctl stop etcd.service
+$ sudo systemctl restart etcd.service
+```
 
 ## See Also
 - [electron/api/crash-reporters](https://github.com/electron/electron/blob/master/docs/api/crash-reporter.md)

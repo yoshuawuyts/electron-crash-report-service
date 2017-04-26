@@ -8,7 +8,7 @@ var pino = require('pino')
 var fs = require('fs')
 
 var config = {
-  CRASH_REPORTS_PATH: String,
+  STORAGE_PATH: String,
   NODE_ENV: String,
   PORT: String
 }
@@ -46,13 +46,13 @@ var errors = {
   }
 }
 
-mkdirp.sync(env.CRASH_REPORTS_PATH)
+mkdirp.sync(env.STORAGE_PATH)
 
 router.route('GET', '/404', function (req, res, ctx) {
   return res.end(errors.ENOTFOUND(req, res))
 })
 
-var upload = multer({ DEST: env.CRASH_REPORTS_PATH }).single('upload_file_minidumps')
+var upload = multer({ DEST: env.STORAGE_PATH }).single('upload_file_minidumps')
 router.route('POST', '/crash-report', function (req, res, ctx) {
   upload(req, res, function (err) {
     if (err) return res.end(errors.EREPORTPARSE(req, res, err))
