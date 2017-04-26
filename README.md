@@ -73,9 +73,9 @@ WantedBy=multi-user.target
 
 ## Environment variables
 ```sh
-PORT                # Set the port the service should listen to
-CRASH_REPORTS_PATH  # Location to store crash reports
-NODE_ENV            # production|development
+PORT [80]                                # Set the port the service should listen to
+CRASH_REPORTS_PATH [/var/crash-reports]  # Location to store crash reports
+NODE_ENV [production]                    # production|development
 ```
 
 ## Routes
